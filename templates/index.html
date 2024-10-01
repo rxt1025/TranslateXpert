@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranslateXpert</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!--Using center align-->
+    <div class="justify">
+        <h1>TranslateXpert</h1>
+        <form id="translate-form">
+            <textarea id="sourceText" placeholder="Enter text to translate"></textarea><br>
+            <label for="sourceLang">Source Language:</label>
+            <select id="sourceLang">
+                <!--Adding Languages-->
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="ko">Korean</option>
+                <option value="Ar">Arabic</option>
+                <option value="tr">Turkish</option>
+                
+            </select><br>
+
+            <label for="targetLang">Translation:</label>
+            <select id="targetLang">
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="ko">Korean</option>
+                <option value="Ar">Arabic</option>
+                <option value="tr">Turkish</option>
+               
+            </select><br>
+
+            <button type="button" id="translateBtn">Translate</button>
+        </form>
+
+        
+        <textarea id="translatedText" readonly></textarea>
+    </div>
+
+    <script>
+        document.getElementById("translateBtn").addEventListener("click", () => {
+            const sourceText = document.getElementById("sourceText").value;
+            const sourceLang = document.getElementById("sourceLang").value;
+            const targetLang = document.getElementById("targetLang").value;
+
+            if (sourceText.trim() !== "") {
+                translateText(sourceText, sourceLang, targetLang);
+            }
+        });
+
+        // Function to handle translation request
+        async function translateText(text, sourceLang, targetLang) {
+            try {
+                const response = await fetch("/translate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        sourceLang: sourceLang,
+                        targetLang: targetLang
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const translatedText = data[0].translations[0].text || "Translation not found.";
+                    document.getElementById("translatedText").value = translatedText;
+                } else {
+                    console.error("Translation API error:", response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+    </script>
+</body>
+</html>
