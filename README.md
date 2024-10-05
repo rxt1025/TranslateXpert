@@ -1,0 +1,1 @@
+This word translator application is designed for word translation that supports multiple languages including Spanish, German, Korean, Turkish, Arabic. User can input word in English and the application will provoide accurate translation into the selected languages.
